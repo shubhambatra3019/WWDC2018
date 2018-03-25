@@ -6,18 +6,45 @@ import SpriteKit
 class GameScene: SKScene {
     
     var numberBall = SKSpriteNode()
-    var numberBall2 = SKSpriteNode()
+    //var numberBall2 = SKSpriteNode()
     
     override func didMove(to view: SKView) {
+        let redBall = SKShapeNode(circleOfRadius: 40)
+        redBall.fillColor = .red
+        redBall.position = CGPoint(x: 200, y: 250)
+        self.addChild(redBall)
         
-        numberBall = self.childNode(withName: "numberBall") as! SKSpriteNode
-        numberBall2 = self.childNode(withName: "numberBall2") as! SKSpriteNode
-        numberBall2.physicsBody?.applyImpulse(CGVector(dx: -30, dy: -30))
-        numberBall.physicsBody?.applyImpulse(CGVector(dx: 20, dy: 20 ))
+        applyPhysicsBody(to: redBall)
+        redBall.physicsBody?.applyImpulse(CGVector(dx: 20, dy: 20))
+        redBall.physicsBody?.categoryBitMask = 1
+        redBall.physicsBody?.collisionBitMask = 2
+        
+        let blueBall = SKShapeNode(circleOfRadius: 50)
+        blueBall.fillColor = .blue
+        blueBall.position = CGPoint(x: 10, y: 450)
+        self.addChild(blueBall)
+        blueBall.physicsBody?.categoryBitMask = 2
+        blueBall.physicsBody?.collisionBitMask = 1
+        
+        applyPhysicsBody(to: blueBall)
+        blueBall.physicsBody?.applyImpulse(CGVector(dx: -30, dy: -30))
+        
         let border = SKPhysicsBody(edgeLoopFrom: self.frame)
         border.friction = 0
         border.restitution = 1
         self.physicsBody = border
+    }
+    
+    func applyPhysicsBody(to ball: SKShapeNode) {
+        ball.physicsBody = SKPhysicsBody(circleOfRadius: 20)
+        ball.physicsBody?.affectedByGravity = false
+        ball.physicsBody?.allowsRotation = false
+        ball.physicsBody?.isDynamic = true
+        ball.physicsBody?.restitution = 1
+        ball.physicsBody?.friction = 0.0
+        ball.physicsBody?.linearDamping = 0.0
+        ball.physicsBody?.angularDamping = 0.0
+        //ball.physicsBody?.applyImpulse(CGVector(dx: 20, dy: 20))
     }
     
     func touchDown(atPoint pos : CGPoint) {
@@ -29,7 +56,7 @@ class GameScene: SKScene {
     }
     
     func touchUp(atPoint pos : CGPoint) {
-        print("Hello")
+        
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
