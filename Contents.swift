@@ -5,25 +5,29 @@ import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    var numberBall = SKSpriteNode()
-    //var numberBall2 = SKSpriteNode()
+    // let redBallCategory: UInt32 = 0x1 << 0
+    //let blueBallCategory: UInt32 = 0x1 << 1
     
     override func didMove(to view: SKView) {
+        // let ballRadius: CGFloat = 20
         self.physicsWorld.contactDelegate = self
-        let redBall = SKShapeNode(circleOfRadius: 40)
+        let redBall = SKShapeNode(circleOfRadius: 20)
         redBall.fillColor = .red
-        redBall.position = CGPoint(x: 200, y: 250)
+        redBall.position = CGPoint(x: -100, y: -100)
         self.addChild(redBall)
         
         applyPhysicsBody(to: redBall)
-        redBall.physicsBody?.applyImpulse(CGVector(dx: 40, dy: 40))
-        let blueBall = SKShapeNode(circleOfRadius: 40)
+        redBall.physicsBody?.applyImpulse(CGVector(dx: 1, dy: 1))
+        
+        
+        let blueBall = SKShapeNode(circleOfRadius: 20)
         blueBall.fillColor = .red
-        blueBall.position = CGPoint(x: 10, y: 450)
+        blueBall.position = CGPoint(x: 100, y: 100)
+        
         self.addChild(blueBall)
         
         applyPhysicsBody(to: blueBall)
-        blueBall.physicsBody?.applyImpulse(CGVector(dx: -60, dy: -60))
+        blueBall.physicsBody?.applyImpulse(CGVector(dx: -2, dy: -2))
         
         let border = SKPhysicsBody(edgeLoopFrom: self.frame)
         border.friction = 0
@@ -35,6 +39,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         blueBall.physicsBody?.contactTestBitMask = 1
         
         redBall.physicsBody?.categoryBitMask = 1
+        //redBall.physicsBody?.collisionBitMask = 1
+        //redBall.physicsBody?.contactTestBitMask = 1
     }
     
     func applyPhysicsBody(to ball: SKShapeNode) {
@@ -42,7 +48,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.affectedByGravity = false
         ball.physicsBody?.allowsRotation = false
         ball.physicsBody?.isDynamic = true
-        ball.physicsBody?.restitution = 1
+        ball.physicsBody?.restitution = 0.5
         ball.physicsBody?.friction = 0.0
         ball.physicsBody?.linearDamping = 0.0
         ball.physicsBody?.angularDamping = 0.0
@@ -56,12 +62,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
             
-            let bigBall = SKShapeNode(circleOfRadius: 80)
+            let bigBall = SKShapeNode(circleOfRadius: 40)
             bigBall.fillColor = .blue
             bigBall.position = contact.contactPoint
             self.addChild(bigBall)
             applyPhysicsBody(to: bigBall)
-            bigBall.physicsBody?.applyImpulse(CGVector(dx: 60, dy: 60))
+            bigBall.physicsBody?.applyImpulse(CGVector(dx: 3, dy: 3))
         }
     }
     
@@ -77,6 +83,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        /*for touch in touches {
+         let location = touch.location(in: self)
+         let touchedNode = self.nodes(at: location)
+         if(touchedNode.count >= 1) {
+         touchedNode[0].run(SKAction.moveTo(x: location.x, duration: 0.2))
+         }
+         }*/
+    }
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
@@ -88,12 +104,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { touchUp(atPoint: t.location(in: self)) }
+        
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         
     }
+    
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
