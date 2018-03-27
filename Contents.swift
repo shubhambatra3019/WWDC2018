@@ -11,40 +11,68 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         // let ballRadius: CGFloat = 20
         self.physicsWorld.contactDelegate = self
-        let redBall = SKShapeNode(circleOfRadius: 20)
-        redBall.fillColor = .red
-        redBall.position = CGPoint(x: -100, y: -100)
-        self.addChild(redBall)
         
-        applyPhysicsBody(to: redBall)
-        redBall.physicsBody?.applyImpulse(CGVector(dx: 1, dy: 1))
+        add2Ball(x: randomYPos(), y: randomYPos())
         
-        
-        let blueBall = SKShapeNode(circleOfRadius: 20)
-        blueBall.fillColor = .red
-        blueBall.position = CGPoint(x: 100, y: 100)
-        
-        self.addChild(blueBall)
-        
-        applyPhysicsBody(to: blueBall)
-        blueBall.physicsBody?.applyImpulse(CGVector(dx: -2, dy: -2))
+        add2Ball(x: randomYPos(), y: randomYPos())
         
         let border = SKPhysicsBody(edgeLoopFrom: self.frame)
         border.friction = 0
         border.restitution = 1
         self.physicsBody = border
+        print(self.frame.minX)
+        print(self.frame.maxX)
+        print(self.frame.minY)
+        print(self.frame.maxY)
         
-        blueBall.physicsBody?.categoryBitMask = 1
-        blueBall.physicsBody?.collisionBitMask = 1
-        blueBall.physicsBody?.contactTestBitMask = 1
+        //blueBall.physicsBody?.categoryBitMask = 1
+        //blueBall.physicsBody?.collisionBitMask = 1
+        //blueBall.physicsBody?.contactTestBitMask = 1
         
-        redBall.physicsBody?.categoryBitMask = 1
+        
         //redBall.physicsBody?.collisionBitMask = 1
         //redBall.physicsBody?.contactTestBitMask = 1
     }
     
-    func applyPhysicsBody(to ball: SKShapeNode) {
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: 20)
+    func randomYPos() -> CGFloat {
+        var randX = Int(arc4random_uniform(640))
+        randX = randX - 320
+        print(randX)
+        return CGFloat(randX)
+        
+    }
+    
+    /*func randomXPos() -> Int {
+     var randY = Int((arc4random_uniform(640)) - 320)
+     print(randY)
+     return randY
+     }*/
+    
+    func add2Ball(x: CGFloat, y: CGFloat) {
+        let redBall = SKShapeNode(circleOfRadius: 40)
+        redBall.fillColor = .red
+        redBall.position = CGPoint(x: x, y: y)
+        self.addChild(redBall)
+        
+        applyPhysicsBody(to: redBall, size: 40)
+        redBall.physicsBody?.applyImpulse(CGVector(dx: 40, dy: 40))
+        redBall.physicsBody?.categoryBitMask = 1
+        redBall.physicsBody?.collisionBitMask = 1
+        redBall.physicsBody?.contactTestBitMask = 1
+    }
+    
+    func add4Ball(x: CGFloat, y: CGFloat) {
+        let bigBall = SKShapeNode(circleOfRadius: 80)
+        bigBall.fillColor = .blue
+        bigBall.position = CGPoint(x: x, y: y)
+        self.addChild(bigBall)
+        
+        applyPhysicsBody(to: bigBall, size: 80)
+        bigBall.physicsBody?.applyImpulse(CGVector(dx: 60, dy: 60))
+    }
+    
+    func applyPhysicsBody(to ball: SKShapeNode, size: CGFloat) {
+        ball.physicsBody = SKPhysicsBody(circleOfRadius: size)
         ball.physicsBody?.affectedByGravity = false
         ball.physicsBody?.allowsRotation = false
         ball.physicsBody?.isDynamic = true
@@ -62,12 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
             
-            let bigBall = SKShapeNode(circleOfRadius: 40)
-            bigBall.fillColor = .blue
-            bigBall.position = contact.contactPoint
-            self.addChild(bigBall)
-            applyPhysicsBody(to: bigBall)
-            bigBall.physicsBody?.applyImpulse(CGVector(dx: 3, dy: 3))
+            add4Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
         }
     }
     
