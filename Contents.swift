@@ -12,9 +12,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // let ballRadius: CGFloat = 20
         self.physicsWorld.contactDelegate = self
         
-        add2Ball(x: randomYPos(), y: randomYPos())
+        var timer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.add2Ball(x:y:)), userInfo: nil, repeats: true)
         
-        add2Ball(x: randomYPos(), y: randomYPos())
+        // add2Ball(x: randomYPos(), y: randomYPos())
+        
+        //add2Ball(x: randomYPos(), y: randomYPos())
         
         let border = SKPhysicsBody(edgeLoopFrom: self.frame)
         border.friction = 0
@@ -37,9 +39,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func randomYPos() -> CGFloat {
         var randX = Int(arc4random_uniform(640))
         randX = randX - 320
-        print(randX)
         return CGFloat(randX)
-        
     }
     
     /*func randomXPos() -> Int {
@@ -48,10 +48,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      return randY
      }*/
     
-    func add2Ball(x: CGFloat, y: CGFloat) {
+    @objc func add2Ball(x: CGFloat, y: CGFloat) {
         let redBall = SKShapeNode(circleOfRadius: 40)
         redBall.fillColor = .red
-        redBall.position = CGPoint(x: x, y: y)
+        redBall.position = CGPoint(x: randomYPos(), y: randomYPos())
         self.addChild(redBall)
         
         applyPhysicsBody(to: redBall, size: 40)
@@ -69,6 +69,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         applyPhysicsBody(to: bigBall, size: 80)
         bigBall.physicsBody?.applyImpulse(CGVector(dx: 60, dy: 60))
+        bigBall.physicsBody?.categoryBitMask = 2
+        bigBall.physicsBody?.collisionBitMask = 2
+        bigBall.physicsBody?.contactTestBitMask = 2
+    }
+    
+    func add8Ball(x: CGFloat, y: CGFloat) {
+        let biggerBall = SKShapeNode(circleOfRadius: 120)
+        biggerBall.fillColor = .green
+        biggerBall.position = CGPoint(x: x, y: y)
+        self.addChild(biggerBall)
+        applyPhysicsBody(to: biggerBall, size: 120)
+        biggerBall.physicsBody?.applyImpulse(CGVector(dx: -80, dy: -80))
+        biggerBall.physicsBody?.categoryBitMask = 3
+        biggerBall.physicsBody?.collisionBitMask = 3
+        biggerBall.physicsBody?.contactTestBitMask = 3
+        
     }
     
     func applyPhysicsBody(to ball: SKShapeNode, size: CGFloat) {
@@ -91,6 +107,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyB.node?.removeFromParent()
             
             add4Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+        }
+            
+        else if collision == 2 {
+            contact.bodyA.node?.removeFromParent()
+            contact.bodyB.node?.removeFromParent()
+            add8Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
         }
     }
     
