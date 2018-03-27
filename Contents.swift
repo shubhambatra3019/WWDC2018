@@ -3,36 +3,38 @@
 import PlaygroundSupport
 import SpriteKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var numberBall = SKSpriteNode()
     //var numberBall2 = SKSpriteNode()
     
     override func didMove(to view: SKView) {
+        self.physicsWorld.contactDelegate = self
         let redBall = SKShapeNode(circleOfRadius: 40)
         redBall.fillColor = .red
         redBall.position = CGPoint(x: 200, y: 250)
         self.addChild(redBall)
         
         applyPhysicsBody(to: redBall)
-        redBall.physicsBody?.applyImpulse(CGVector(dx: 20, dy: 20))
-        redBall.physicsBody?.categoryBitMask = 1
-        redBall.physicsBody?.collisionBitMask = 2
-        
-        let blueBall = SKShapeNode(circleOfRadius: 50)
-        blueBall.fillColor = .blue
+        redBall.physicsBody?.applyImpulse(CGVector(dx: 40, dy: 40))
+        let blueBall = SKShapeNode(circleOfRadius: 40)
+        blueBall.fillColor = .red
         blueBall.position = CGPoint(x: 10, y: 450)
         self.addChild(blueBall)
-        blueBall.physicsBody?.categoryBitMask = 2
-        blueBall.physicsBody?.collisionBitMask = 1
         
         applyPhysicsBody(to: blueBall)
-        blueBall.physicsBody?.applyImpulse(CGVector(dx: -30, dy: -30))
+        blueBall.physicsBody?.applyImpulse(CGVector(dx: -60, dy: -60))
         
         let border = SKPhysicsBody(edgeLoopFrom: self.frame)
         border.friction = 0
         border.restitution = 1
         self.physicsBody = border
+        
+        blueBall.physicsBody?.categoryBitMask = 1
+        blueBall.physicsBody?.collisionBitMask = 1
+        blueBall.physicsBody?.contactTestBitMask = 1
+        
+        redBall.physicsBody?.categoryBitMask = 1
     }
     
     func applyPhysicsBody(to ball: SKShapeNode) {
@@ -45,6 +47,22 @@ class GameScene: SKScene {
         ball.physicsBody?.linearDamping = 0.0
         ball.physicsBody?.angularDamping = 0.0
         //ball.physicsBody?.applyImpulse(CGVector(dx: 20, dy: 20))
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        let collision: UInt32 = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        
+        if collision == 1 {
+            contact.bodyA.node?.removeFromParent()
+            contact.bodyB.node?.removeFromParent()
+            
+            let bigBall = SKShapeNode(circleOfRadius: 80)
+            bigBall.fillColor = .blue
+            bigBall.position = contact.contactPoint
+            self.addChild(bigBall)
+            applyPhysicsBody(to: bigBall)
+            bigBall.physicsBody?.applyImpulse(CGVector(dx: 60, dy: 60))
+        }
     }
     
     func touchDown(atPoint pos : CGPoint) {
