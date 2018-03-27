@@ -78,7 +78,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+        for touch in touches {
+            let location = touch.location(in: self)
+            let touchedNode = self.nodes(at: location)
+            if(touchedNode.count >= 1) {
+                touchedNode[0].run(SKAction.move(to: location, duration: 0))
+            }
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
