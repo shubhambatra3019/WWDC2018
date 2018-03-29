@@ -13,27 +13,22 @@ class GameStartScene: SKScene {
         startButton.setTitle("Start", for: .normal)
         super.init(size: size)
         backgroundColor = SKColor.white
-        let instructions1 = "Welcome to the Predator Prey Game!"
-        let instructions2 = "Kill the predators by tapping on them"
-        let instructions3 = "so that they don't eat the preys"
-        let label1 = SKLabelNode(fontNamed: "Chalkduster")
-        let label2 = SKLabelNode(fontNamed: "Chalkduster")
-        let label3 = SKLabelNode(fontNamed: "Chalkduster")
-        label1.text = instructions1
-        label1.fontSize = 20
-        label1.fontColor = SKColor.black
-        label1.position = CGPoint(x: size.width/2, y: 2*size.height/3 + 40)
-        self.addChild(label1)
-        label2.text = instructions2
-        label2.fontSize = 20
-        label2.fontColor = SKColor.black
-        label2.position = CGPoint(x: size.width/2, y: 2*size.height/3)
-        self.addChild(label2)
-        label3.text = instructions3
-        label3.fontSize = 20
-        label3.fontColor = SKColor.black
-        label3.position = CGPoint(x: size.width/2, y: 2*size.height/3 - 40)
-        self.addChild(label3)
+        
+        let heading = "How To Play:"
+        let inst1 = "1) Tap and hold a ball and collide it with same numbered ball to make a bigger ball"
+        let inst2 = "2) Reach your goal to win the game"
+        addLabel(text: heading, fontSize: 25.0, position: CGPoint(x: size.width/2, y: 2*size.height/3 + 20))
+        addLabel(text: inst1, fontSize: 10.0, position: CGPoint(x: size.width/2, y: 2*size.height/3))
+        addLabel(text: inst2, fontSize: 10.0, position: CGPoint(x: size.width/2, y: 2*size.height/3 - 20))
+    }
+    
+    func addLabel(text: String, fontSize: CGFloat, position: CGPoint) {
+        let label = SKLabelNode(fontNamed: "Helvetica")
+        label.text = text
+        label.fontSize = fontSize
+        label.fontColor = SKColor.black
+        label.position = position
+        self.addChild(label)
     }
     
     required init(coder aDecoder: NSCoder) {
