@@ -49,13 +49,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      return randY
      }*/
     
+    func moveStationaryBalls() {
+        for child in children {
+            if((child.physicsBody?.velocity.dx)! <= CGFloat(5.0) && (child.physicsBody?.velocity.dx)! >= CGFloat(-5.0)) {
+                child.physicsBody?.velocity.dx = 20
+                print("Velocity x changed")
+            }
+            if((child.physicsBody?.velocity.dy)! <= CGFloat(5.0) && (child.physicsBody?.velocity.dy)! >= CGFloat(-5.0)) {
+                child.physicsBody?.velocity.dy = 20
+                print("Velocity y changed")
+            }
+        }
+    }
+    
     @objc func add2Ball(x: CGFloat, y: CGFloat) {
-        let redBall = SKShapeNode(circleOfRadius: 40)
+        
+        moveStationaryBalls()
+        let redBall = SKShapeNode(circleOfRadius: 30)
         redBall.fillColor = .red
         redBall.position = CGPoint(x: randomYPos(), y: randomYPos())
         self.addChild(redBall)
         
-        applyPhysicsBody(to: redBall, size: 40)
+        applyPhysicsBody(to: redBall, size: 30)
         redBall.physicsBody?.applyImpulse(CGVector(dx: 40, dy: 40))
         redBall.physicsBody?.categoryBitMask = 1
         redBall.physicsBody?.collisionBitMask = 1
@@ -63,12 +78,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func add4Ball(x: CGFloat, y: CGFloat) {
-        let bigBall = SKShapeNode(circleOfRadius: 80)
+        let bigBall = SKShapeNode(circleOfRadius: 50)
         bigBall.fillColor = .blue
         bigBall.position = CGPoint(x: x, y: y)
         self.addChild(bigBall)
         
-        applyPhysicsBody(to: bigBall, size: 80)
+        applyPhysicsBody(to: bigBall, size: 50)
         bigBall.physicsBody?.applyImpulse(CGVector(dx: 60, dy: 60))
         bigBall.physicsBody?.categoryBitMask = 2
         bigBall.physicsBody?.collisionBitMask = 2
@@ -76,11 +91,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func add8Ball(x: CGFloat, y: CGFloat) {
-        let biggerBall = SKShapeNode(circleOfRadius: 120)
+        let biggerBall = SKShapeNode(circleOfRadius: 70)
         biggerBall.fillColor = .green
         biggerBall.position = CGPoint(x: x, y: y)
         self.addChild(biggerBall)
-        applyPhysicsBody(to: biggerBall, size: 120)
+        applyPhysicsBody(to: biggerBall, size: 70)
         biggerBall.physicsBody?.applyImpulse(CGVector(dx: -80, dy: -80))
         biggerBall.physicsBody?.categoryBitMask = 3
         biggerBall.physicsBody?.collisionBitMask = 3
@@ -89,11 +104,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func add16Ball(x: CGFloat, y: CGFloat) {
-        let biggerBall = SKShapeNode(circleOfRadius: 150)
+        let biggerBall = SKShapeNode(circleOfRadius: 100)
         biggerBall.fillColor = .white
         biggerBall.position = CGPoint(x: x, y: y)
         self.addChild(biggerBall)
-        applyPhysicsBody(to: biggerBall, size: 150)
+        applyPhysicsBody(to: biggerBall, size: 100)
         biggerBall.physicsBody?.applyImpulse(CGVector(dx: -90, dy: -90))
         biggerBall.physicsBody?.categoryBitMask = 4
         biggerBall.physicsBody?.collisionBitMask = 4
@@ -102,11 +117,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func add32Ball(x: CGFloat, y: CGFloat) {
-        let biggerBall = SKShapeNode(circleOfRadius: 180)
+        let biggerBall = SKShapeNode(circleOfRadius: 120)
         biggerBall.fillColor = .orange
         biggerBall.position = CGPoint(x: x, y: y)
         self.addChild(biggerBall)
-        applyPhysicsBody(to: biggerBall, size: 180)
+        applyPhysicsBody(to: biggerBall, size: 120)
         biggerBall.physicsBody?.applyImpulse(CGVector(dx: -100, dy: -100))
         biggerBall.physicsBody?.categoryBitMask = 5
         biggerBall.physicsBody?.collisionBitMask = 5
@@ -185,17 +200,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let location = touch.location(in: self)
             let touchedNode = self.nodes(at: location)
             if(touchedNode.count >= 1) {
+                touchedNode[touchedNode.count-1].physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                 touchedNode[touchedNode.count-1].run(SKAction.move(to: location, duration: 0))
             }
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+        if let touch = touches.first {
+            let location = touch.location(in: self)
+            let touchedNode = self.nodes(at: location)
+            for node in touchedNode {
+                node.physicsBody?.velocity = CGVector(dx: -50, dy: -50)
+                print("Velocity addded")
+            }
+        }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+        print("touches Cancelled")
     }
     
     
