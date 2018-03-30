@@ -37,13 +37,20 @@ class GameStartScene: SKScene {
         super.init(size: size)
         backgroundColor = SKColor.darkGray
         let heading = "How To Play:"
-        let inst1 = "1) Tap and hold a ball and collide it with same numbered ball to make a bigger ball"
-        let inst2 = "2) Reach your goal to win the game"
-        addLabel(text: heading, fontSize: 25.0, position: CGPoint(x: size.width/2, y: 2*size.height/3 + 20))
-        addLabel(text: inst1, fontSize: 10.0, position: CGPoint(x: size.width/2, y: 2*size.height/3))
-        addLabel(text: inst2, fontSize: 10.0, position: CGPoint(x: size.width/2, y: 2*size.height/3 - 20))
+        let inst3 = "3) Tap and hold a ball to select it"
+        let inst2 = "2) Start the game"
+        let inst4 = "4) Collide it with same numbered ball to add them"
+        let inst1 = "1) Set a goal before starting game"
+        let inst5 = "5) Reach your goal to win the game"
+        let heading2 = "Set your Goal"
         
-        
+        addLabel(text: heading, fontSize: 25.0, position: CGPoint(x: size.width/2, y: size.height - 100))
+        addLabel(text: inst1, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 120))
+        addLabel(text: inst2, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 140))
+        addLabel(text: inst3, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 160))
+        addLabel(text: inst4, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 180))
+        addLabel(text: inst5, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 200))
+        addLabel(text: heading2, fontSize: 30.0, position: CGPoint(x: size.width/2, y: 2*size.height/3 - 50))
     }
     
     /*func addButton(button: UIButton, frame: CGRect, title: String) {
@@ -98,9 +105,8 @@ class GameStartScene: SKScene {
         secondButton.isHidden = true
         thirdButton.isHidden = true
         let reveal = SKTransition.flipVertical(withDuration: 0.8)
-        let gameScene = GameScene(size: self.size)
-        self.view?.presentScene(gameScene, transition: reveal)
+        let gameScene = GameScene(fileNamed: "GameScene")
+        self.view?.presentScene(gameScene!, transition: reveal)
         startButton.isHidden = true
     }
 }
-
