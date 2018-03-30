@@ -1,7 +1,7 @@
 //: A SpriteKit based Playground
-
 import PlaygroundSupport
 import SpriteKit
+import GameplayKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -11,8 +11,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         // let ballRadius: CGFloat = 20
         self.physicsWorld.contactDelegate = self
+        //backgroundColor = .orange
         
-        var timer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.add2Ball(x:y:)), userInfo: nil, repeats: true)
+        var timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(self.add2Ball(x:y:)), userInfo: nil, repeats: true)
         
         // add2Ball(x: randomYPos(), y: randomYPos())
         
@@ -87,6 +88,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    func add16Ball(x: CGFloat, y: CGFloat) {
+        let biggerBall = SKShapeNode(circleOfRadius: 150)
+        biggerBall.fillColor = .white
+        biggerBall.position = CGPoint(x: x, y: y)
+        self.addChild(biggerBall)
+        applyPhysicsBody(to: biggerBall, size: 150)
+        biggerBall.physicsBody?.applyImpulse(CGVector(dx: -90, dy: -90))
+        biggerBall.physicsBody?.categoryBitMask = 4
+        biggerBall.physicsBody?.collisionBitMask = 4
+        biggerBall.physicsBody?.contactTestBitMask = 4
+        
+    }
+    
+    func add32Ball(x: CGFloat, y: CGFloat) {
+        let biggerBall = SKShapeNode(circleOfRadius: 180)
+        biggerBall.fillColor = .orange
+        biggerBall.position = CGPoint(x: x, y: y)
+        self.addChild(biggerBall)
+        applyPhysicsBody(to: biggerBall, size: 180)
+        biggerBall.physicsBody?.applyImpulse(CGVector(dx: -100, dy: -100))
+        biggerBall.physicsBody?.categoryBitMask = 5
+        biggerBall.physicsBody?.collisionBitMask = 5
+        biggerBall.physicsBody?.contactTestBitMask = 5
+        
+    }
+    
+    
     func applyPhysicsBody(to ball: SKShapeNode, size: CGFloat) {
         ball.physicsBody = SKPhysicsBody(circleOfRadius: size)
         ball.physicsBody?.affectedByGravity = false
@@ -100,19 +128,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        let collision: UInt32 = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        let collision: UInt32 = contact.bodyA.categoryBitMask
+        let collision2: UInt32 = contact.bodyB.categoryBitMask
         
-        if collision == 1 {
+        if collision == 1 && collision2 == 1 {
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
-            
+            print("Red Balls Collided")
             add4Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
         }
             
-        else if collision == 2 {
+        else if collision == 2 && collision2 == 2 {
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
+            print("Blue Balls collided")
             add8Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+        }
+        else if collision == 3 && collision2 == 3 {
+            contact.bodyA.node?.removeFromParent()
+            contact.bodyB.node?.removeFromParent()
+            print("Green Balls Collided")
+            add16Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+        }
+        else if collision == 4 && collision2 == 4{
+            contact.bodyA.node?.removeFromParent()
+            contact.bodyB.node?.removeFromParent()
+            add32Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            print("White Balls Collided")
         }
     }
     
@@ -143,7 +185,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let location = touch.location(in: self)
             let touchedNode = self.nodes(at: location)
             if(touchedNode.count >= 1) {
-                touchedNode[0].run(SKAction.move(to: location, duration: 0))
+                touchedNode[touchedNode.count-1].run(SKAction.move(to: location, duration: 0))
             }
         }
     }
@@ -163,13 +205,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 }
 
 // Load the SKScene from 'GameScene.sks'
-let sceneView = SKView(frame: CGRect(x:0 , y:0, width: 300, height: 600))
-if let scene = GameScene(fileNamed: "GameScene") {
+let sceneView = SKView(frame: CGRect(x:0 , y:0, width: 750, height: 1334))
+let scene = GameStartScene(size: CGSize(width: 750, height: 1334))
     // Set the scale mode to scale to fit the window
-    scene.scaleMode = .aspectFill
+   // scene.scaleMode = .aspectFill
     
     // Present the scene
     sceneView.presentScene(scene)
-}
-
+//}
 PlaygroundSupport.PlaygroundPage.current.liveView = sceneView

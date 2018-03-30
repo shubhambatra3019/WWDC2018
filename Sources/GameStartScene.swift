@@ -1,20 +1,19 @@
 import Foundation
 import SpriteKit
 
-class GameStartScene: SKScene {
+public class GameStartScene: SKScene {
+    public var startButton: UIButton
+    public var firstButton: UIButton
+    public var secondButton: UIButton
+    public var thirdButton: UIButton
+    public var fourthButton: UIButton
     
-    var startButton: UIButton
-    var firstButton: UIButton
-    var secondButton: UIButton
-    var thirdButton: UIButton
-    
-    override init(size: CGSize) {
-        
-        startButton = UIButton(frame: CGRect(x: size.width/2-125, y: size.height/2-25, width: 250, height: 50))
-        startButton.backgroundColor = .blue
+    override public init(size: CGSize) {
+        startButton = UIButton(frame: CGRect(x: size.width/2 - 175, y: size.height - 80, width: 350, height: 60))
+        startButton.backgroundColor = .green
         startButton.layer.cornerRadius = 10
         startButton.clipsToBounds = true
-        startButton.setTitle("Start", for: .normal)
+        startButton.setTitle("Start Game", for: .normal)
         
         firstButton = UIButton(frame: CGRect(x: size.width/2 - 125, y: size.height/2 + 25, width: 250, height: 50))
         firstButton.backgroundColor = .blue
@@ -34,8 +33,15 @@ class GameStartScene: SKScene {
         thirdButton.clipsToBounds = true
         thirdButton.setTitle("1024", for: .normal)
         
+        fourthButton = UIButton(frame: CGRect(x: size.width/2 - 125, y: size.height/2 + 125, width: 250, height: 50))
+        fourthButton.backgroundColor = .blue
+        fourthButton.layer.cornerRadius = 10
+        fourthButton.clipsToBounds = true
+        fourthButton.setTitle("128", for: .normal)
+        
         super.init(size: size)
         backgroundColor = SKColor.darkGray
+    
         let heading = "How To Play:"
         let inst3 = "3) Tap and hold a ball to select it"
         let inst2 = "2) Start the game"
@@ -53,17 +59,7 @@ class GameStartScene: SKScene {
         addLabel(text: heading2, fontSize: 30.0, position: CGPoint(x: size.width/2, y: 2*size.height/3 - 50))
     }
     
-    /*func addButton(button: UIButton, frame: CGRect, title: String) {
-     var button = button
-     button = UIButton(frame: frame)
-     button.backgroundColor = .blue
-     button.layer.cornerRadius = 10
-     button.clipsToBounds = true
-     button.setTitle(title, for: )
-     
-     }*/
-    
-    func addLabel(text: String, fontSize: CGFloat, position: CGPoint) {
+    public func addLabel(text: String, fontSize: CGFloat, position: CGPoint) {
         var label = SKLabelNode(fontNamed: "Helvetica")
         label.text = text
         label.fontSize = fontSize
@@ -72,11 +68,11 @@ class GameStartScene: SKScene {
         self.addChild(label)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func didMove(to view: SKView) {
+    override public func didMove(to view: SKView) {
         startButton.addTarget(self, action: #selector(GameStartScene.moveToNextScene), for: UIControlEvents.primaryActionTriggered)
         self.view?.addSubview(startButton)
         firstButton.addTarget(self, action: #selector(changeGoal), for: UIControlEvents.primaryActionTriggered)
@@ -85,14 +81,18 @@ class GameStartScene: SKScene {
         self.view?.addSubview(secondButton)
         thirdButton.addTarget(self, action: #selector(changeGoal), for: UIControlEvents.primaryActionTriggered)
         self.view?.addSubview(thirdButton)
+        fourthButton.addTarget(self, action: #selector(changeGoal), for: UIControlEvents.primaryActionTriggered)
+        self.view?.addSubview(fourthButton)
     }
     
-    @objc func  changeGoal(sender: UIButton) {
+    @objc public func changeGoal(sender: UIButton) {
         switch sender {
+        case fourthButton:
+            print("Score set to 128")
         case firstButton:
             print("Score set to 256")
         case secondButton:
-            print("Score changed to 512")
+            print("Score set to 512")
         case thirdButton:
             print("Score set to 1024")
         default:
@@ -100,13 +100,14 @@ class GameStartScene: SKScene {
         }
     }
     
-    @objc func moveToNextScene(sender: UIButton) {
+    @objc public func moveToNextScene(sender: UIButton) {
         firstButton.isHidden = true
         secondButton.isHidden = true
         thirdButton.isHidden = true
+        fourthButton.isHidden = true
         let reveal = SKTransition.flipVertical(withDuration: 0.8)
-        let gameScene = GameScene(fileNamed: "GameScene")
-        self.view?.presentScene(gameScene!, transition: reveal)
+        //let gameScene = GameScene(fileNamed: "GameScene")
+        //self.view?.presentScene(gameScene!, transition: reveal)
         startButton.isHidden = true
     }
 }
