@@ -10,10 +10,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         var timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(self.add2Ball(x:y:)), userInfo: nil, repeats: true)
-        timer2 = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
+        timer2 = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
         let border = SKPhysicsBody(edgeLoopFrom: self.frame)
         border.friction = 0
-        border.restitution = 1
+        border.restitution = 0.5
         self.physicsBody = border
     }
     
@@ -195,30 +195,57 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let collision: UInt32 = contact.bodyA.categoryBitMask
         let collision2: UInt32 = contact.bodyB.categoryBitMask
         
-        if collision == 1 && collision2 == 1 {
+        /*if collision == 1 && collision2 == 1 {
+         contact.bodyA.node?.removeFromParent()
+         contact.bodyB.node?.removeFromParent()
+         print("Red Balls Collided")
+         add4Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+         }
+         
+         else if collision == 2 && collision2 == 2 {
+         contact.bodyA.node?.removeFromParent()
+         contact.bodyB.node?.removeFromParent()
+         print("Blue Balls collided")
+         add8Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+         }
+         else if collision == 3 && collision2 == 3 {
+         contact.bodyA.node?.removeFromParent()
+         contact.bodyB.node?.removeFromParent()
+         print("Green Balls Collided")
+         add16Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+         }
+         else if collision == 4 && collision2 == 4{
+         contact.bodyA.node?.removeFromParent()
+         contact.bodyB.node?.removeFromParent()
+         add32Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+         print("White Balls Collided")
+         }*/
+        if collision == collision2 {
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
-            print("Red Balls Collided")
-            add4Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
-        }
             
-        else if collision == 2 && collision2 == 2 {
-            contact.bodyA.node?.removeFromParent()
-            contact.bodyB.node?.removeFromParent()
-            print("Blue Balls collided")
-            add8Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
-        }
-        else if collision == 3 && collision2 == 3 {
-            contact.bodyA.node?.removeFromParent()
-            contact.bodyB.node?.removeFromParent()
-            print("Green Balls Collided")
-            add16Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
-        }
-        else if collision == 4 && collision2 == 4{
-            contact.bodyA.node?.removeFromParent()
-            contact.bodyB.node?.removeFromParent()
-            add32Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
-            print("White Balls Collided")
+            switch collision {
+            case 1:
+                add4Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            case 2:
+                add8Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            case 3:
+                add16Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            case 4:
+                add32Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            case 5:
+                add64Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            case 6:
+                add128Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            case 7:
+                add256Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            case 8:
+                add512Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            case 9:
+                add1024Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+            default:
+                print("Invalid collisionMask")
+            }
         }
     }
     
@@ -241,6 +268,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
+            print("ToucesEnded")
             timer2 = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
             let location = touch.location(in: self)
             let touchedNode = self.nodes(at: location)
@@ -261,6 +289,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Called before each frame is rendered
     }
 }
+
 
 // Load the SKScene from 'GameScene.sks'
 let sceneView = SKView(frame: CGRect(x:0 , y:-100, width: 600, height: 600))
