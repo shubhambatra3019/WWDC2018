@@ -73,8 +73,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         applyPhysicsBody(to: redBall, size: 30)
         redBall.physicsBody?.applyImpulse(CGVector(dx: 40, dy: 40))
         redBall.physicsBody?.categoryBitMask = 1
-        redBall.physicsBody?.collisionBitMask = 1
-        redBall.physicsBody?.contactTestBitMask = 1
+        redBall.physicsBody?.collisionBitMask = 1|2|3|4
+        redBall.physicsBody?.contactTestBitMask = 1|2|3|4
     }
     
     func add4Ball(x: CGFloat, y: CGFloat) {
@@ -86,8 +86,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         applyPhysicsBody(to: bigBall, size: 50)
         bigBall.physicsBody?.applyImpulse(CGVector(dx: 60, dy: 60))
         bigBall.physicsBody?.categoryBitMask = 2
-        bigBall.physicsBody?.collisionBitMask = 2
-        bigBall.physicsBody?.contactTestBitMask = 2
+        bigBall.physicsBody?.collisionBitMask = 2|1|3|4
+        bigBall.physicsBody?.contactTestBitMask = 2|1|3|4
     }
     
     func add8Ball(x: CGFloat, y: CGFloat) {
@@ -98,8 +98,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         applyPhysicsBody(to: biggerBall, size: 70)
         biggerBall.physicsBody?.applyImpulse(CGVector(dx: -80, dy: -80))
         biggerBall.physicsBody?.categoryBitMask = 3
-        biggerBall.physicsBody?.collisionBitMask = 3
-        biggerBall.physicsBody?.contactTestBitMask = 3
+        biggerBall.physicsBody?.collisionBitMask = 3|2|1|4
+        biggerBall.physicsBody?.contactTestBitMask = 3|2|1|4
         
     }
     
@@ -111,8 +111,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         applyPhysicsBody(to: biggerBall, size: 100)
         biggerBall.physicsBody?.applyImpulse(CGVector(dx: -90, dy: -90))
         biggerBall.physicsBody?.categoryBitMask = 4
-        biggerBall.physicsBody?.collisionBitMask = 4
-        biggerBall.physicsBody?.contactTestBitMask = 4
+        biggerBall.physicsBody?.collisionBitMask = 4|1|2|3
+        biggerBall.physicsBody?.contactTestBitMask = 4|1|2|3
         
     }
     
@@ -152,6 +152,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("Red Balls Collided")
             add4Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
         }
+            
+            // else if collision == 1 && (collision2 == 2 || collision2 == 3 || collision2 == 4) {
+            //    print("Red Balls Collided with Different Colored Ball")
+            // }
+            
             
         else if collision == 2 && collision2 == 2 {
             contact.bodyA.node?.removeFromParent()
@@ -226,6 +231,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Called before each frame is rendered
     }
 }
+
 
 // Load the SKScene from 'GameScene.sks'
 let sceneView = SKView(frame: CGRect(x:0 , y:0, width: 750, height: 1334))
