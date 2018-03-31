@@ -41,7 +41,7 @@ public class GameStartScene: SKScene {
         
         super.init(size: size)
         backgroundColor = SKColor.darkGray
-    
+        
         let heading = "How To Play:"
         let inst3 = "3) Tap and hold a ball to select it"
         let inst2 = "2) Start the game"
@@ -106,7 +106,7 @@ public class GameStartScene: SKScene {
         thirdButton.isHidden = true
         fourthButton.isHidden = true
         let reveal = SKTransition.flipVertical(withDuration: 0.8)
-        //let gameScene = GameScene(fileNamed: "GameScene")
+      //  let gameScene =
         //self.view?.presentScene(gameScene!, transition: reveal)
         startButton.isHidden = true
     }
