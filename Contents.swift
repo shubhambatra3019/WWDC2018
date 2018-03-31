@@ -10,11 +10,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         var timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(self.add2Ball(x:y:)), userInfo: nil, repeats: true)
-        timer2 = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
+        //add2Ball(x: 0, y: 0)
+        timer2 = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
         let border = SKPhysicsBody(edgeLoopFrom: self.frame)
         border.friction = 0
         border.restitution = 0.5
+        border.angularDamping = 0.0
+        border.linearDamping = 0.0
         self.physicsBody = border
+        
     }
     
     func randomYPos() -> CGFloat {
@@ -31,23 +35,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     @objc func moveStationaryBalls() {
         for child in children {
-            /*if(((child.physicsBody?.velocity.dx)! <= CGFloat(5.0) && (child.physicsBody?.velocity.dx)! >= CGFloat(-5.0)) && ((child.physicsBody?.velocity.dy)! <= CGFloat(5.0) && (child.physicsBody?.velocity.dy)! >= CGFloat(-5.0))) {
-             child.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-             child.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/5, dy: randomSpeed()/5))
-             print("Velocity changed")
-             }
-             */
             if(child.physicsBody?.velocity.dx == 0) {
-                child.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/4, dy: 0))
+                child.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: 0))
             }
-            if(child.physicsBody?.velocity.dy == 0) {
-                child.physicsBody?.applyImpulse(CGVector(dx: 0, dy: randomSpeed()/4))
+            else if(child.physicsBody?.velocity.dy == 0) {
+                child.physicsBody?.applyImpulse(CGVector(dx: 0, dy: randomSpeed()))
             }
+            
         }
     }
     
     func randomSpeed() -> CGFloat{
-        var xSpeed = Int(arc4random_uniform(41)) + 40
+        var xSpeed = Int(arc4random_uniform(9)) + 8
         var randomSign = Int(arc4random_uniform(2))
         if(randomSign == 0) {
             return CGFloat(xSpeed)
@@ -63,10 +62,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.position = CGPoint(x: randomYPos(), y: randomYPos())
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 25)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/5, dy: randomSpeed()/5))
+        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
         ball.physicsBody?.categoryBitMask = 1
         ball.physicsBody?.collisionBitMask = 1|2|3|4|5
         ball.physicsBody?.contactTestBitMask = 1|2|3|4|5
+        print(ball.physicsBody?.mass)
     }
     
     func add4Ball(x: CGFloat, y: CGFloat) {
@@ -75,10 +75,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 35)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/4, dy: randomSpeed()/4))
+        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
         ball.physicsBody?.categoryBitMask = 2
         ball.physicsBody?.collisionBitMask = 2|1|3|4|5
         ball.physicsBody?.contactTestBitMask = 2|1|3|4|5
+        print(ball.physicsBody?.mass)
     }
     
     func add8Ball(x: CGFloat, y: CGFloat) {
@@ -87,10 +88,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 45)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/3, dy: randomSpeed()/3))
+        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
         ball.physicsBody?.categoryBitMask = 3
         ball.physicsBody?.collisionBitMask = 3|2|1|4|5
         ball.physicsBody?.contactTestBitMask = 3|2|1|4|5
+        print(ball.physicsBody?.mass)
         
     }
     
@@ -100,7 +102,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 55)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/3, dy: randomSpeed()/3))
+        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
         ball.physicsBody?.categoryBitMask = 4
         ball.physicsBody?.collisionBitMask = 4|1|2|3|5
         ball.physicsBody?.contactTestBitMask = 4|1|2|3|5
@@ -113,7 +115,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 65)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/2, dy: randomSpeed()/2))
+        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
         ball.physicsBody?.categoryBitMask = 5
         ball.physicsBody?.collisionBitMask = 5|1|2|3|4
         ball.physicsBody?.contactTestBitMask = 5|1|2|3|4
@@ -125,7 +127,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 75)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/2, dy: randomSpeed()/2))
+        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
         ball.physicsBody?.categoryBitMask = 6
         ball.physicsBody?.collisionBitMask = 6|5|1|2|3|4
         ball.physicsBody?.contactTestBitMask = 6|5|1|2|3|4
@@ -161,7 +163,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 105)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()*1.4, dy: randomSpeed()*1.4))
+        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
         ball.physicsBody?.categoryBitMask = 9
         ball.physicsBody?.collisionBitMask = 9|8|7|6|5|1|2|3|4
         ball.physicsBody?.contactTestBitMask = 9|8|7|6|5|1|2|3|4
@@ -173,7 +175,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 115)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()*1.5, dy: randomSpeed()*1.5))
+        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
         ball.physicsBody?.categoryBitMask = 10
         ball.physicsBody?.collisionBitMask = 10|9|8|7|6|5|1|2|3|4
         ball.physicsBody?.contactTestBitMask = 10|9|8|7|6|5|1|2|3|4
@@ -188,37 +190,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.friction = 0.0
         ball.physicsBody?.linearDamping = 0.0
         ball.physicsBody?.angularDamping = 0.0
-        //ball.physicsBody?.applyImpulse(CGVector(dx: 20, dy: 20))
+        ball.physicsBody?.mass = 0.0872664675116539
+        
     }
+    
     
     func didBegin(_ contact: SKPhysicsContact) {
         let collision: UInt32 = contact.bodyA.categoryBitMask
         let collision2: UInt32 = contact.bodyB.categoryBitMask
         
-        /*if collision == 1 && collision2 == 1 {
-         contact.bodyA.node?.removeFromParent()
-         contact.bodyB.node?.removeFromParent()
-         print("Red Balls Collided")
-         add4Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+        /*if(collision == self.physicsBody?.categoryBitMask || collision2 == self.physicsBody?.categoryBitMask) {
+         if(collision2 == self.physicsBody?.categoryBitMask) {
+         let speedX = contact.bodyA.velocity.dx
+         let speedY = contact.bodyA.velocity.dy
+         //contact.bodyA.velocity = CGVector(dx: 0, dy: 0)
+         contact.bodyA.velocity = CGVector(dx: speedX*1.2, dy: speedY*1.2)
          }
-         
-         else if collision == 2 && collision2 == 2 {
-         contact.bodyA.node?.removeFromParent()
-         contact.bodyB.node?.removeFromParent()
-         print("Blue Balls collided")
-         add8Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+         else if(collision == self.physicsBody?.categoryBitMask) {
+         let speedX = contact.bodyB.velocity.dx
+         let speedY = contact.bodyB.velocity.dy
+         contact.bodyB.velocity = CGVector(dx: 0, dy: 0)
+         contact.bodyB.velocity = CGVector(dx: speedX*1.2, dy: speedY*1.2)
          }
-         else if collision == 3 && collision2 == 3 {
-         contact.bodyA.node?.removeFromParent()
-         contact.bodyB.node?.removeFromParent()
-         print("Green Balls Collided")
-         add16Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
-         }
-         else if collision == 4 && collision2 == 4{
-         contact.bodyA.node?.removeFromParent()
-         contact.bodyB.node?.removeFromParent()
-         add32Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
-         print("White Balls Collided")
          }*/
         if collision == collision2 {
             contact.bodyA.node?.removeFromParent()
@@ -268,14 +261,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            print("ToucesEnded")
-            timer2 = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
+            timer2 = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
             let location = touch.location(in: self)
             let touchedNode = self.nodes(at: location)
             for node in touchedNode {
-                
-                node.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/4, dy: randomSpeed()/4))
-                print("Velocity addded")
+                node.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
             }
         }
     }
