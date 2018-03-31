@@ -5,9 +5,12 @@ import GameplayKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
+    var timer2 = Timer()
+    
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
         var timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(self.add2Ball(x:y:)), userInfo: nil, repeats: true)
+        timer2 = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
         let border = SKPhysicsBody(edgeLoopFrom: self.frame)
         border.friction = 0
         border.restitution = 1
@@ -26,14 +29,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      return randY
      }*/
     
-    func moveStationaryBalls() {
+    @objc func moveStationaryBalls() {
         for child in children {
-            if(((child.physicsBody?.velocity.dx)! <= CGFloat(5.0) && (child.physicsBody?.velocity.dx)! >= CGFloat(-5.0)) && ((child.physicsBody?.velocity.dy)! <= CGFloat(5.0) && (child.physicsBody?.velocity.dy)! >= CGFloat(-5.0))) {
-                child.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-                child.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/5, dy: randomSpeed()/5))
-                print("Velocity changed")
+            /*if(((child.physicsBody?.velocity.dx)! <= CGFloat(5.0) && (child.physicsBody?.velocity.dx)! >= CGFloat(-5.0)) && ((child.physicsBody?.velocity.dy)! <= CGFloat(5.0) && (child.physicsBody?.velocity.dy)! >= CGFloat(-5.0))) {
+             child.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+             child.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/5, dy: randomSpeed()/5))
+             print("Velocity changed")
+             }
+             */
+            if(child.physicsBody?.velocity.dx == 0) {
+                child.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/4, dy: 0))
             }
-            
+            if(child.physicsBody?.velocity.dy == 0) {
+                child.physicsBody?.applyImpulse(CGVector(dx: 0, dy: randomSpeed()/4))
+            }
         }
     }
     
@@ -49,7 +58,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     @objc func add2Ball(x: CGFloat, y: CGFloat) {
-        moveStationaryBalls()
         let ball = SKShapeNode(circleOfRadius: 25)
         ball.fillColor = .red
         ball.position = CGPoint(x: randomYPos(), y: randomYPos())
@@ -223,18 +231,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let location = touch.location(in: self)
             let touchedNode = self.nodes(at: location)
             if(touchedNode.count >= 1) {
+                timer2.invalidate()
                 touchedNode[touchedNode.count-1].physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                 touchedNode[touchedNode.count-1].run(SKAction.move(to: location, duration: 0))
+                
             }
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
+            timer2 = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
             let location = touch.location(in: self)
             let touchedNode = self.nodes(at: location)
             for node in touchedNode {
-                node.physicsBody?.velocity = CGVector(dx: -50, dy: -50)
+                
+                node.physicsBody?.applyImpulse(CGVector(dx: randomSpeed()/4, dy: randomSpeed()/4))
                 print("Velocity addded")
             }
         }
@@ -249,7 +261,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Called before each frame is rendered
     }
 }
-
 
 // Load the SKScene from 'GameScene.sks'
 let sceneView = SKView(frame: CGRect(x:0 , y:-100, width: 600, height: 600))
