@@ -106,8 +106,8 @@ public class GameStartScene: SKScene {
         thirdButton.isHidden = true
         fourthButton.isHidden = true
         let reveal = SKTransition.flipVertical(withDuration: 0.8)
-      //  let gameScene =
-        //self.view?.presentScene(gameScene!, transition: reveal)
+        let gameScene = GameScene(size: self.size)
+        self.view?.presentScene(gameScene, transition: reveal)
         startButton.isHidden = true
     }
 }
