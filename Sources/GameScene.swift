@@ -1,15 +1,45 @@
-import Foundation
-
 import SpriteKit
 import GameplayKit
 
 public class GameScene: SKScene, SKPhysicsContactDelegate {
     
     public var timer2 = Timer()
+    public var timer =  Timer()
+    public var pauseButton: UIButton
+    public var resumeButton: UIButton
+    public var mainScreenButton: UIButton
+    public var totalBalls: Int
+    public var winValue = 0
     
     override public init(size: CGSize) {
-        super.init(size: size)
+        pauseButton = UIButton(frame: CGRect(x: 5, y: 5, width: 100, height: 60))
+        pauseButton.backgroundColor = .clear
+        pauseButton.clipsToBounds = true
+        pauseButton.isHidden = false
+        pauseButton.setTitle("Pause", for: .normal)
+        pauseButton.layer.zPosition = 1
         
+        resumeButton = UIButton(frame: CGRect(x: size.width/2 - 100, y: size.height/2 - 100, width: 200, height: 80))
+        resumeButton.backgroundColor = .blue
+        resumeButton.layer.cornerRadius = 10
+        resumeButton.clipsToBounds = true
+        resumeButton.isHidden = true
+        resumeButton.setTitle("Resume Game", for: .normal)
+        
+        mainScreenButton = UIButton(frame: CGRect(x: size.width/2 - 120, y: size.height/2, width: 250, height: 80))
+        mainScreenButton.backgroundColor = .blue
+        mainScreenButton.layer.cornerRadius = 10
+        mainScreenButton.clipsToBounds = true
+        mainScreenButton.isHidden = true
+        mainScreenButton.setTitle("Go Back To Main Screen", for: .normal)
+        
+        totalBalls = 0
+        
+        super.init(size: size)
+        self.add2Ball(x: 0, y: 0)
+        timer = Timer.scheduledTimer(timeInterval:3.5, target: self, selector: #selector(self.add2Ball(x:y:)), userInfo: nil, repeats: true)
+        
+        timer2 = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
     }
     
     required public init(coder aDecoder: NSCoder) {
@@ -17,22 +47,42 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override public func didMove(to view: SKView) {
+        resumeButton.addTarget(self, action: #selector(resumeButtonTapped), for: .primaryActionTriggered)
+        self.view?.addSubview(resumeButton)
+        mainScreenButton.addTarget(self, action: #selector(goToMainScreen), for: .primaryActionTriggered)
+        self.view?.addSubview(mainScreenButton)
+        pauseButton.addTarget(self, action: #selector(pauseButtonTapped), for: .primaryActionTriggered)
+        self.view?.addSubview(pauseButton)
         self.physicsWorld.contactDelegate = self
-        var timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(self.add2Ball(x:y:)), userInfo: nil, repeats: true)
-        //add2Ball(x: 0, y: 0)
-        timer2 = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(moveStationaryBalls), userInfo: nil, repeats: true)
+        
         let border = SKPhysicsBody(edgeLoopFrom: self.frame)
         border.friction = 0
-        border.restitution = 0.5
+        border.restitution = 0.8
         border.angularDamping = 0.0
         border.linearDamping = 0.0
         self.physicsBody = border
         
     }
     
+    @objc public func resumeButtonTapped() {
+        timer = Timer.scheduledTimer(timeInterval:3.5, target: self, selector: #selector(self.add2Ball(x:y:)), userInfo: nil, repeats: true)
+        self.view?.isPaused = false
+        resumeButton.isHidden = true
+        mainScreenButton.isHidden = true
+    }
+    
+    @objc public func goToMainScreen() {
+        resumeButton.isHidden = true
+        pauseButton.isHidden = true
+        mainScreenButton.isHidden = true
+        self.view?.isPaused = false
+        let reveal = SKTransition.flipVertical(withDuration: 1)
+        let mainScene = GameStartScene(size: self.size)
+        self.view?.presentScene(mainScene, transition: reveal)
+    }
+    
     public func randomYPos() -> CGFloat {
-        var randX = Int(arc4random_uniform(640))
-        randX = randX - 320
+        var randX = Int(arc4random_uniform(200))
         return CGFloat(randX)
     }
     
@@ -65,6 +115,16 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    public func checkGameOver() {
+        if(totalBalls >= 8) {
+            
+            pauseButton.isHidden = true
+            let gameOverScene = GameOverScene(size: self.size)
+            gameOverScene.infoLabel.text = "You Lost"
+            self.view?.presentScene(gameOverScene, transition: SKTransition.flipVertical(withDuration: 0.8))
+        }
+    }
+    
     @objc public func add2Ball(x: CGFloat, y: CGFloat) {
         let ball = SKShapeNode(circleOfRadius: 25)
         ball.fillColor = .red
@@ -75,7 +135,9 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.categoryBitMask = 1
         ball.physicsBody?.collisionBitMask = 1|2|3|4|5
         ball.physicsBody?.contactTestBitMask = 1|2|3|4|5
-        print(ball.physicsBody?.mass)
+        totalBalls = totalBalls + 1
+        checkGameOver()
+        
     }
     
     public func add4Ball(x: CGFloat, y: CGFloat) {
@@ -88,7 +150,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.categoryBitMask = 2
         ball.physicsBody?.collisionBitMask = 2|1|3|4|5
         ball.physicsBody?.contactTestBitMask = 2|1|3|4|5
-        print(ball.physicsBody?.mass)
+        
     }
     
     public func add8Ball(x: CGFloat, y: CGFloat) {
@@ -101,8 +163,6 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.categoryBitMask = 3
         ball.physicsBody?.collisionBitMask = 3|2|1|4|5
         ball.physicsBody?.contactTestBitMask = 3|2|1|4|5
-        print(ball.physicsBody?.mass)
-        
     }
     
     public func add16Ball(x: CGFloat, y: CGFloat) {
@@ -166,30 +226,6 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.contactTestBitMask = 8|7|6|5|1|2|3|4
     }
     
-    public func add512Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 105)
-        ball.fillColor = .yellow
-        ball.position = CGPoint(x: x, y: y)
-        self.addChild(ball)
-        applyPhysicsBody(to: ball, size: 105)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
-        ball.physicsBody?.categoryBitMask = 9
-        ball.physicsBody?.collisionBitMask = 9|8|7|6|5|1|2|3|4
-        ball.physicsBody?.contactTestBitMask = 9|8|7|6|5|1|2|3|4
-    }
-    
-    public func add1024Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 115)
-        ball.fillColor = .orange
-        ball.position = CGPoint(x: x, y: y)
-        self.addChild(ball)
-        applyPhysicsBody(to: ball, size: 115)
-        ball.physicsBody?.applyImpulse(CGVector(dx: randomSpeed(), dy: randomSpeed()))
-        ball.physicsBody?.categoryBitMask = 10
-        ball.physicsBody?.collisionBitMask = 10|9|8|7|6|5|1|2|3|4
-        ball.physicsBody?.contactTestBitMask = 10|9|8|7|6|5|1|2|3|4
-    }
-    
     public func applyPhysicsBody(to ball: SKShapeNode, size: CGFloat) {
         ball.physicsBody = SKPhysicsBody(circleOfRadius: size)
         ball.physicsBody?.affectedByGravity = false
@@ -208,24 +244,10 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
         let collision: UInt32 = contact.bodyA.categoryBitMask
         let collision2: UInt32 = contact.bodyB.categoryBitMask
         
-        /*if(collision == self.physicsBody?.categoryBitMask || collision2 == self.physicsBody?.categoryBitMask) {
-         if(collision2 == self.physicsBody?.categoryBitMask) {
-         let speedX = contact.bodyA.velocity.dx
-         let speedY = contact.bodyA.velocity.dy
-         //contact.bodyA.velocity = CGVector(dx: 0, dy: 0)
-         contact.bodyA.velocity = CGVector(dx: speedX*1.2, dy: speedY*1.2)
-         }
-         else if(collision == self.physicsBody?.categoryBitMask) {
-         let speedX = contact.bodyB.velocity.dx
-         let speedY = contact.bodyB.velocity.dy
-         contact.bodyB.velocity = CGVector(dx: 0, dy: 0)
-         contact.bodyB.velocity = CGVector(dx: speedX*1.2, dy: speedY*1.2)
-         }
-         }*/
         if collision == collision2 {
             contact.bodyA.node?.removeFromParent()
             contact.bodyB.node?.removeFromParent()
-            
+            totalBalls = totalBalls - 1
             switch collision {
             case 1:
                 add4Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
@@ -235,20 +257,36 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
                 add16Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
             case 4:
                 add32Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+                if(winValue == 32) {
+                    gameWon()
+                }
             case 5:
                 add64Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+                if(winValue == 64) {
+                    gameWon()
+                }
             case 6:
                 add128Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+                if(winValue == 128) {
+                    gameWon()
+                }
             case 7:
                 add256Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
-            case 8:
-                add512Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
-            case 9:
-                add1024Ball(x: contact.contactPoint.x, y: contact.contactPoint.y)
+                if(winValue == 256) {
+                    gameWon()
+                }
             default:
                 print("Invalid collisionMask")
             }
         }
+    }
+    
+    public func gameWon() {
+        pauseButton.isHidden = true
+        let gameOverScene = GameOverScene(size: self.size)
+        gameOverScene.infoLabel.text = "You Won"
+        self.view?.presentScene(gameOverScene, transition: SKTransition.flipVertical(withDuration: 0.8))
+        
     }
     
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -283,8 +321,16 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
         print("touches Cancelled")
     }
     
+    @objc public func pauseButtonTapped() {
+        resumeButton.isHidden = false
+        mainScreenButton.isHidden = false
+        self.view?.isPaused = true
+        timer.invalidate()
+    }
+    
     
     override public func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
     }
 }
+

@@ -8,40 +8,45 @@ public class GameStartScene: SKScene {
     public var thirdButton: UIButton
     public var fourthButton: UIButton
     
+    
     override public init(size: CGSize) {
-        startButton = UIButton(frame: CGRect(x: size.width/2 - 175, y: size.height - 80, width: 350, height: 60))
+        startButton = UIButton(frame: CGRect(x: size.width/2 - 175, y: size.height - 100, width: 350, height: 60))
         startButton.backgroundColor = .green
         startButton.layer.cornerRadius = 10
         startButton.clipsToBounds = true
+        startButton.isHidden = false
         startButton.setTitle("Start Game", for: .normal)
         
-        firstButton = UIButton(frame: CGRect(x: size.width/2 - 125, y: size.height/2 + 25, width: 250, height: 50))
-        firstButton.backgroundColor = .blue
-        firstButton.layer.cornerRadius = 10
-        firstButton.clipsToBounds = true
-        firstButton.setTitle("256", for: .normal)
-        
-        secondButton = UIButton(frame: CGRect(x: size.width/2 - 125, y: size.height/2 + 75, width: 250, height: 50))
-        secondButton.backgroundColor = .blue
-        secondButton.layer.cornerRadius = 10
-        secondButton.clipsToBounds = true
-        secondButton.setTitle("512", for: .normal)
-        
-        thirdButton = UIButton(frame: CGRect(x: size.width/2 - 125, y: size.height/2 + 125, width: 250, height: 50))
-        thirdButton.backgroundColor = .blue
-        thirdButton.layer.cornerRadius = 10
-        thirdButton.clipsToBounds = true
-        thirdButton.setTitle("1024", for: .normal)
-        
-        fourthButton = UIButton(frame: CGRect(x: size.width/2 - 125, y: size.height/2 + 125, width: 250, height: 50))
+        fourthButton = UIButton(frame: CGRect(x: size.width/2 - 75, y: size.height/2 - 60, width: 150, height: 50))
         fourthButton.backgroundColor = .blue
         fourthButton.layer.cornerRadius = 10
         fourthButton.clipsToBounds = true
-        fourthButton.setTitle("128", for: .normal)
+        fourthButton.isHidden = false
+        fourthButton.setTitle("32", for: .normal)
+        
+        firstButton = UIButton(frame: CGRect(x: size.width/2 - 75, y: size.height/2, width: 150, height: 50))
+        firstButton.backgroundColor = .blue
+        firstButton.layer.cornerRadius = 10
+        firstButton.clipsToBounds = true
+        firstButton.isHidden = false
+        firstButton.setTitle("64", for: .normal)
+        
+        secondButton = UIButton(frame: CGRect(x: size.width/2 - 75, y: size.height/2 + 60, width: 150, height: 50))
+        secondButton.backgroundColor = .blue
+        secondButton.layer.cornerRadius = 10
+        secondButton.clipsToBounds = true
+        secondButton.isHidden = false
+        secondButton.setTitle("128", for: .normal)
+        
+        thirdButton = UIButton(frame: CGRect(x: size.width/2 - 75, y: size.height/2 + 120, width: 150, height: 50))
+        thirdButton.backgroundColor = .blue
+        thirdButton.layer.cornerRadius = 10
+        thirdButton.clipsToBounds = true
+        thirdButton.isHidden = false
+        thirdButton.setTitle("256", for: .normal)
         
         super.init(size: size)
         backgroundColor = SKColor.darkGray
-        
         let heading = "How To Play:"
         let inst3 = "3) Tap and hold a ball to select it"
         let inst2 = "2) Start the game"
@@ -85,29 +90,75 @@ public class GameStartScene: SKScene {
         self.view?.addSubview(fourthButton)
     }
     
-    @objc public func changeGoal(sender: UIButton) {
+    @objc public func  changeGoal(sender: UIButton) {
         switch sender {
         case fourthButton:
-            print("Score set to 128")
+            print("Score set to 32")
+            fourthButton.isSelected = true
+            firstButton.isSelected = false
+            secondButton.isSelected = false
+            thirdButton.isSelected = false
+            fourthButton.backgroundColor = .green
+            firstButton.backgroundColor = .blue
+            secondButton.backgroundColor = .blue
+            thirdButton.backgroundColor = .blue
         case firstButton:
-            print("Score set to 256")
+            print("Score set to 64")
+            fourthButton.isSelected = false
+            firstButton.isSelected = true
+            secondButton.isSelected = false
+            thirdButton.isSelected = false
+            fourthButton.backgroundColor = .blue
+            firstButton.backgroundColor = .green
+            secondButton.backgroundColor = .blue
+            thirdButton.backgroundColor = .blue
         case secondButton:
-            print("Score set to 512")
+            print("Score set to 128")
+            fourthButton.isSelected = false
+            firstButton.isSelected = false
+            secondButton.isSelected = true
+            thirdButton.isSelected = false
+            fourthButton.backgroundColor = .blue
+            firstButton.backgroundColor = .blue
+            secondButton.backgroundColor = .green
+            thirdButton.backgroundColor = .blue
         case thirdButton:
-            print("Score set to 1024")
+            print("Score set to 256")
+            fourthButton.isSelected = false
+            firstButton.isSelected = false
+            secondButton.isSelected = false
+            thirdButton.isSelected = true
+            fourthButton.backgroundColor = .blue
+            firstButton.backgroundColor = .blue
+            secondButton.backgroundColor = .blue
+            thirdButton.backgroundColor = .green
         default:
             print("Something wrong happened")
         }
     }
     
     @objc public func moveToNextScene(sender: UIButton) {
+        
         firstButton.isHidden = true
         secondButton.isHidden = true
         thirdButton.isHidden = true
         fourthButton.isHidden = true
         let reveal = SKTransition.flipVertical(withDuration: 0.8)
         let gameScene = GameScene(size: self.size)
+        if(fourthButton.isSelected) {
+            gameScene.winValue = 32
+        }
+        else if(firstButton.isSelected) {
+            gameScene.winValue = 64
+        }
+        else if(secondButton.isSelected) {
+            gameScene.winValue = 128
+        }
+        else if(thirdButton.isSelected) {
+            gameScene.winValue = 256
+        }
         self.view?.presentScene(gameScene, transition: reveal)
         startButton.isHidden = true
     }
 }
+
