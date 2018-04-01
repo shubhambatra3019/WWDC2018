@@ -126,8 +126,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     @objc public func add2Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 25)
-        ball.fillColor = .red
+        let ball = SKSpriteNode(imageNamed: "2ball")
         ball.position = CGPoint(x: randomYPos(), y: randomYPos())
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 25)
@@ -141,8 +140,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     public func add4Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 35)
-        ball.fillColor = .blue
+        let ball = SKSpriteNode(imageNamed: "4ball")
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 35)
@@ -154,8 +152,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     public func add8Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 45)
-        ball.fillColor = .green
+        let ball = SKSpriteNode(imageNamed: "8ball")
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 45)
@@ -166,8 +163,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     public func add16Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 55)
-        ball.fillColor = .white
+        let ball = SKSpriteNode(imageNamed: "16ball")
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 55)
@@ -179,8 +175,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     public func add32Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 65)
-        ball.fillColor = .orange
+        let ball = SKSpriteNode(imageNamed: "32ball")
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 65)
@@ -191,8 +186,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     public func add64Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 75)
-        ball.fillColor = .cyan
+        let ball = SKSpriteNode(imageNamed: "64ball")
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 75)
@@ -203,8 +197,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     public func add128Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 85)
-        ball.fillColor = .magenta
+        let ball = SKSpriteNode(imageNamed: "128ball")
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 85)
@@ -215,8 +208,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     public func add256Ball(x: CGFloat, y: CGFloat) {
-        let ball = SKShapeNode(circleOfRadius: 95)
-        ball.fillColor = .orange
+        let ball = SKSpriteNode(imageNamed: "256ball")
         ball.position = CGPoint(x: x, y: y)
         self.addChild(ball)
         applyPhysicsBody(to: ball, size: 95)
@@ -226,7 +218,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.contactTestBitMask = 8|7|6|5|1|2|3|4
     }
     
-    public func applyPhysicsBody(to ball: SKShapeNode, size: CGFloat) {
+    public func applyPhysicsBody(to ball: SKSpriteNode, size: CGFloat) {
         ball.physicsBody = SKPhysicsBody(circleOfRadius: size)
         ball.physicsBody?.affectedByGravity = false
         ball.physicsBody?.allowsRotation = false
@@ -318,7 +310,6 @@ public class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override public func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touches Cancelled")
     }
     
     @objc public func pauseButtonTapped() {

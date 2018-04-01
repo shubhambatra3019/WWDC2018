@@ -11,10 +11,11 @@ public class GameStartScene: SKScene {
     
     override public init(size: CGSize) {
         startButton = UIButton(frame: CGRect(x: size.width/2 - 175, y: size.height - 100, width: 350, height: 60))
-        startButton.backgroundColor = .green
+        startButton.backgroundColor = .gray
         startButton.layer.cornerRadius = 10
         startButton.clipsToBounds = true
         startButton.isHidden = false
+        startButton.isEnabled = false
         startButton.setTitle("Start Game", for: .normal)
         
         fourthButton = UIButton(frame: CGRect(x: size.width/2 - 75, y: size.height/2 - 60, width: 150, height: 50))
@@ -53,15 +54,17 @@ public class GameStartScene: SKScene {
         let inst4 = "4) Collide it with same numbered ball to add them"
         let inst1 = "1) Set a goal before starting game"
         let inst5 = "5) Reach your goal to win the game"
+        let inst6 = "6) You lose if there are total 8 balls on screen at any point"
         let heading2 = "Set your Goal"
         
-        addLabel(text: heading, fontSize: 25.0, position: CGPoint(x: size.width/2, y: size.height - 100))
-        addLabel(text: inst1, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 120))
-        addLabel(text: inst2, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 140))
-        addLabel(text: inst3, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 160))
-        addLabel(text: inst4, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 180))
-        addLabel(text: inst5, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 200))
-        addLabel(text: heading2, fontSize: 30.0, position: CGPoint(x: size.width/2, y: 2*size.height/3 - 50))
+        addLabel(text: heading, fontSize: 25.0, position: CGPoint(x: size.width/2, y: size.height - 50))
+        addLabel(text: inst1, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 70))
+        addLabel(text: inst2, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 90))
+        addLabel(text: inst3, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 110))
+        addLabel(text: inst4, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 130))
+        addLabel(text: inst5, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 150))
+        addLabel(text: inst6, fontSize: 15.0, position: CGPoint(x: size.width/2, y: size.height - 170))
+        addLabel(text: heading2, fontSize: 30.0, position: CGPoint(x: size.width/2, y: 2*size.height/3 - 20))
     }
     
     public func addLabel(text: String, fontSize: CGFloat, position: CGPoint) {
@@ -93,7 +96,6 @@ public class GameStartScene: SKScene {
     @objc public func  changeGoal(sender: UIButton) {
         switch sender {
         case fourthButton:
-            print("Score set to 32")
             fourthButton.isSelected = true
             firstButton.isSelected = false
             secondButton.isSelected = false
@@ -102,8 +104,9 @@ public class GameStartScene: SKScene {
             firstButton.backgroundColor = .blue
             secondButton.backgroundColor = .blue
             thirdButton.backgroundColor = .blue
+            startButton.isEnabled = true
+            startButton.backgroundColor = .green
         case firstButton:
-            print("Score set to 64")
             fourthButton.isSelected = false
             firstButton.isSelected = true
             secondButton.isSelected = false
@@ -112,8 +115,9 @@ public class GameStartScene: SKScene {
             firstButton.backgroundColor = .green
             secondButton.backgroundColor = .blue
             thirdButton.backgroundColor = .blue
+            startButton.isEnabled = true
+            startButton.backgroundColor = .green
         case secondButton:
-            print("Score set to 128")
             fourthButton.isSelected = false
             firstButton.isSelected = false
             secondButton.isSelected = true
@@ -122,8 +126,9 @@ public class GameStartScene: SKScene {
             firstButton.backgroundColor = .blue
             secondButton.backgroundColor = .green
             thirdButton.backgroundColor = .blue
+            startButton.isEnabled = true
+            startButton.backgroundColor = .green
         case thirdButton:
-            print("Score set to 256")
             fourthButton.isSelected = false
             firstButton.isSelected = false
             secondButton.isSelected = false
@@ -132,6 +137,8 @@ public class GameStartScene: SKScene {
             firstButton.backgroundColor = .blue
             secondButton.backgroundColor = .blue
             thirdButton.backgroundColor = .green
+            startButton.isEnabled = true
+            startButton.backgroundColor = .green
         default:
             print("Something wrong happened")
         }
